@@ -51,7 +51,7 @@ copy_zk_files() {
 }
 
 configure_zk_dockerfile() {
-  sed -i .bak "s;zookeeper.version;$ZOOKEEPER_VERSION;" $WORKDIR/zk_image/Dockerfile
+  sed -i "s;zookeeper.version;$ZOOKEEPER_VERSION;" $WORKDIR/zk_image/Dockerfile
 }
 
 copy_kafka_files() {
@@ -61,13 +61,14 @@ copy_kafka_files() {
 }
 
 configure_kafka_dockerfile() {
-  sed -i .bak "s;kafka.version;$KAFKA_VERSION;" $WORKDIR/kafka_image/Dockerfile
+  sed -i "s;kafka.version;$KAFKA_VERSION;" $WORKDIR/kafka_image/Dockerfile
 }
 
 build_image() {
   IMG="kodbasen/$2-arm"
   log "start building image $IMG:v$3 ..."
   docker build --rm=true --no-cache -t $IMG:latest $WORKDIR/$1
+#  docker build -t $IMG:latest $WORKDIR/$1
   docker tag $IMG:latest $IMG:v$3
   docker push $IMG:latest
   docker push $IMG:v$3
@@ -79,11 +80,12 @@ log "start building zookeeper for ARM"
 clone https://github.com/fabric8io/fabric8-zookeeper-docker.git fabric8-zookeeper-docker $FABRIC8_ZOOKEEPER_DOCKER_VERSION
 copy_zk_files
 configure_zk_dockerfile
-build_image $WORKDIR/zk_image zookeeper $ZOOKEEPER_VERSION
+build_image zk_image zookeeper $ZOOKEEPER_VERSION
 log "done building zookeeper image for ARM"
 
 log "start building kafka for ARM"
 clone https://github.com/wurstmeister/kafka-docker.git kafka-docker $KAFKA_DOCKER_VERSION
 copy_kafka_files
-build_image $WORKDIR/kafka_image kafka $KAFKA_VERSION
+configure_kafka_dockerfile
+build_image kafka_image kafka $KAFKA_VERSION
 log "done building kafka image for ARM"
