@@ -1,0 +1,27 @@
+FROM kodbasen/java-jdk-arm:latest
+
+MAINTAINER https://github.com/larmog
+
+USER root
+
+ENV ZOOKEEPER_VERSION zookeeper.version
+EXPOSE 2181 2888 3888
+
+RUN apt-get update \
+    && apt-get install -y dnsutils \
+    && apt-get install -y --no-install-recommends wget \
+    && wget -q -O - http://apache.mirrors.pair.com/zookeeper/zookeeper-${ZOOKEEPER_VERSION}/zookeeper-${ZOOKEEPER_VERSION}.tar.gz | tar -xzf - -C /opt \
+    && mv /opt/zookeeper-${ZOOKEEPER_VERSION} /opt/zookeeper \
+    && cp /opt/zookeeper/conf/zoo_sample.cfg /opt/zookeeper/conf/zoo.cfg \
+    && mkdir -p /opt/zookeeper/{data,log} \
+    && apt-get remove -y wget && apt autoremove -y \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+WORKDIR /opt/zookeeper
+VOLUME ["/opt/zookeeper/conf", "/opt/zookeeper/data", "/opt/zookeeper/log"]
+
+COPY config-and-run.sh ./bin/
+COPY zoo.cfg ./conf/
+
+CMD ["/opt/zookeeper/bin/config-and-run.sh"]
