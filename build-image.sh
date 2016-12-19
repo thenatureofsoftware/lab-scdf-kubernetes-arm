@@ -44,7 +44,7 @@ copy_files() {
 }
 
 configure_dockerfile() {
-  sed -i template "s;zookeeper.version;$ZOOKEEPER_VERSION;" $WORKDIR/image/Dockerfile
+  sed -i "s;zookeeper.version;$ZOOKEEPER_VERSION;" $WORKDIR/image/Dockerfile
 }
 
 build_image() {
