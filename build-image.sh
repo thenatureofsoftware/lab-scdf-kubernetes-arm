@@ -10,6 +10,7 @@ APP="lab1"
 WORKDIR=$BASEDIR/.work
 ARCH=${ARCH:-arm}
 ZOOKEEPER_VERSION=3.4.6
+FABRIC8_ZOOKEEPER_DOCKER_VERSION="d2e7b83c49068e85614f78d3150503382280df2d"
 
 log() {
   timestamp=$(date +"[%m%d %H:%M:%S]")
@@ -26,6 +27,9 @@ clone() {
   fi
   log "cloning $1 in to $2"
   git clone $1 $WORKDIR/$2
+  cd $WORKDIR/$2
+  git checkout $3
+  cd $BASEDIR
 }
 
 init() {
@@ -57,7 +61,7 @@ build_image() {
 }
 
 init
-clone https://github.com/fabric8io/fabric8-zookeeper-docker.git fabric8-zookeeper-docker
+clone https://github.com/fabric8io/fabric8-zookeeper-docker.git fabric8-zookeeper-docker $FABRIC8_ZOOKEEPER_DOCKER_VERSION
 copy_files
 configure_dockerfile
 build_image
