@@ -1,0 +1,155 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: zookeeper
+    server-id: "1"
+  name: zookeeper-1
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: SERVER_ID
+      value: "1"
+    - name: MAX_SERVERS
+      value: "3"
+    image: kodbasen/zookeeper-arm
+    imagePullPolicy: Always
+    name: server
+    ports:
+    - containerPort: 2181
+      protocol: TCP
+    - containerPort: 2888
+      protocol: TCP
+    - containerPort: 3888
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: zookeeper
+    server-id: "1"
+  name: zookeeper-1
+  namespace: default
+spec:
+  ports:
+  - port: 2181
+    protocol: TCP
+    targetPort: 2181
+    name: clientPort
+  - port: 2888
+    protocol: TCP
+    targetPort: 2888
+    name: peerPort1
+  - port: 3888
+    protocol: TCP
+    targetPort: 3888
+    name: peerPort2
+  selector:
+    name: zookeeper
+    server-id: "1"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: zookeeper
+    server-id: "2"
+  name: zookeeper-2
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: SERVER_ID
+      value: "2"
+    - name: MAX_SERVERS
+      value: "3"
+    image: kodbasen/zookeeper-arm
+    imagePullPolicy: Always
+    name: server
+    ports:
+    - containerPort: 2181
+      protocol: TCP
+    - containerPort: 2888
+      protocol: TCP
+    - containerPort: 3888
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: zookeeper
+    server-id: "2"
+  name: zookeeper-2
+  namespace: default
+spec:
+  ports:
+  - port: 2181
+    protocol: TCP
+    targetPort: 2181
+    name: clientPort
+  - port: 2888
+    protocol: TCP
+    targetPort: 2888
+    name: peerPort1
+  - port: 3888
+    protocol: TCP
+    targetPort: 3888
+    name: peerPort2
+  selector:
+    name: zookeeper
+    server-id: "2"
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    name: zookeeper
+    server-id: "3"
+  name: zookeeper-3
+  namespace: default
+spec:
+  containers:
+  - env:
+    - name: SERVER_ID
+      value: "3"
+    - name: MAX_SERVERS
+      value: "3"
+    image: kodbasen/zookeeper-arm
+    imagePullPolicy: Always
+    name: server
+    ports:
+    - containerPort: 2181
+      protocol: TCP
+    - containerPort: 2888
+      protocol: TCP
+    - containerPort: 3888
+      protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: zookeeper
+    server-id: "3"
+  name: zookeeper-3
+  namespace: default
+spec:
+  ports:
+  - port: 2181
+    protocol: TCP
+    targetPort: 2181
+    name: clientPort
+  - port: 2888
+    protocol: TCP
+    targetPort: 2888
+    name: peerPort1
+  - port: 3888
+    protocol: TCP
+    targetPort: 3888
+    name: peerPort2
+  selector:
+    name: zookeeper
+    server-id: "3"
