@@ -9,8 +9,10 @@ BASEDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 APP="lab1"
 WORKDIR=$BASEDIR/.work
 ARCH=${ARCH:-arm}
-ZOOKEEPER_VERSION=3.4.6
+ZOOKEEPER_VERSION="3.4.6"
 FABRIC8_ZOOKEEPER_DOCKER_VERSION="d2e7b83c49068e85614f78d3150503382280df2d"
+KAFKA_DOCKER_VERSION="971c811fcca126053b9e625e3334edd742fd9abe"
+KAFKA_VERSION="0.10.1.0"
 
 log() {
   timestamp=$(date +"[%m%d %H:%M:%S]")
@@ -37,31 +39,51 @@ init() {
     return
   fi
   log "creating work directory: $WORKDIR"
-  mkdir -p $WORKDIR/image
+  mkdir -p $WORKDIR/zk_image
+  mkdir -p $WORKDIR/kafka_image
 }
 
-copy_files() {
+copy_zk_files() {
   log "copying files..."
-  cp $WORKDIR/fabric8-zookeeper-docker/zoo.cfg $WORKDIR/image
-  cp $WORKDIR/fabric8-zookeeper-docker/config-and-run.sh $WORKDIR/image
-  cp $BASEDIR/Dockerfile.template $WORKDIR/image/Dockerfile
+  cp $WORKDIR/fabric8-zookeeper-docker/zoo.cfg $WORKDIR/zk_image
+  cp $WORKDIR/fabric8-zookeeper-docker/config-and-run.sh $WORKDIR/zk_image
+  cp $BASEDIR/Dockerfile.zookeeper $WORKDIR/zk_image/Dockerfile
 }
 
-configure_dockerfile() {
-  sed -i "s;zookeeper.version;$ZOOKEEPER_VERSION;" $WORKDIR/image/Dockerfile
+configure_zk_dockerfile() {
+  sed -i .bak "s;zookeeper.version;$ZOOKEEPER_VERSION;" $WORKDIR/zk_image/Dockerfile
+}
+
+copy_kafka_files() {
+  log "copying files..."
+  cp $WORKDIR/kafka-docker/*.sh $WORKDIR/kafka_image
+  cp $BASEDIR/Dockerfile.kafka $WORKDIR/kafka_image/Dockerfile
+}
+
+configure_kafka_dockerfile() {
+  sed -i .bak "s;kafka.version;$KAFKA_VERSION;" $WORKDIR/kafka_image/Dockerfile
 }
 
 build_image() {
-  log "start building image ..."
-  docker build --rm=true --no-cache -t kodbasen/zookeeper-arm:latest $WORKDIR/image
-  docker tag kodbasen/zookeeper-arm:latest kodbasen/zookeeper-arm:v$ZOOKEEPER_VERSION
-  docker push kodbasen/zookeeper-arm:latest
-  docker push kodbasen/zookeeper-arm:v$ZOOKEEPER_VERSION
-  log "done building image"
+  IMG="kodbasen/$2-arm"
+  log "start building image $IMG:v$3 ..."
+  docker build --rm=true --no-cache -t $IMG:latest $WORKDIR/$1
+  docker tag $IMG:latest $IMG:v$3
+  docker push $IMG:latest
+  docker push $IMG:v$3
+  log "done building image $IMG:v$3"
 }
 
 init
+log "start building zookeeper for ARM"
 clone https://github.com/fabric8io/fabric8-zookeeper-docker.git fabric8-zookeeper-docker $FABRIC8_ZOOKEEPER_DOCKER_VERSION
-copy_files
-configure_dockerfile
-build_image
+copy_zk_files
+configure_zk_dockerfile
+build_image $WORKDIR/zk_image zookeeper $ZOOKEEPER_VERSION
+log "done building zookeeper image for ARM"
+
+log "start building kafka for ARM"
+clone https://github.com/wurstmeister/kafka-docker.git kafka-docker $KAFKA_DOCKER_VERSION
+copy_kafka_files
+build_image $WORKDIR/kafka_image kafka $KAFKA_VERSION
+log "done building kafka image for ARM"
