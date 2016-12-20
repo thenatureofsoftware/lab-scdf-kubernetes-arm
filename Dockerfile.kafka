@@ -2,7 +2,7 @@ FROM kodbasen/java-jdk-arm:latest
 
 MAINTAINER https://github.com/larmog
 
-ENV KAFKA_VERSION="kafka.version" SCALA_VERSION="2.11"
+ENV KAFKA_VERSION="kafka.version" SCALA_VERSION="2.11" KAFKA_HOME="/opt/kafka"
 ADD download-kafka.sh /tmp/download-kafka.sh
 ADD start-kafka.sh /usr/bin/start-kafka.sh
 ADD create-topics.sh /usr/bin/create-topics.sh
