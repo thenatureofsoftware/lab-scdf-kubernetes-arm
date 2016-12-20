@@ -18,7 +18,8 @@ RUN apt-get update \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && chmod a+x /usr/bin/start-kafka.sh \
-    && chmod a+x /usr/bin/create-topics.sh
+    && chmod a+x /usr/bin/create-topics.sh \
+    && echo "# Kafka server.properties" > /config/server.properties
 
 VOLUME ["/kafka"]
 
