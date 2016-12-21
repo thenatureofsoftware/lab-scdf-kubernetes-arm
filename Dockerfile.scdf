@@ -4,6 +4,6 @@ MAINTAINER https://github.com/larmog
 
 ENV SPRING_CLOUD_DATAFLOW_VERSION="scdf.version"
 
-ADD target/spring-cloud-dataflow-server-kubernetes-${SPRING_CLOUD_DATAFLOW_VERSION}.jar /app/spring-cloud-dataflow-server-kubernetes.jar
+ADD spring-cloud-dataflow-server-kubernetes-${SPRING_CLOUD_DATAFLOW_VERSION}.jar /app/spring-cloud-dataflow-server-kubernetes.jar
 
 ENTRYPOINT ["/opt/jdk/bin/java", "-jar", "/app/spring-cloud-dataflow-server-kubernetes.jar"]
