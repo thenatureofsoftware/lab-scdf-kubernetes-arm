@@ -41,11 +41,11 @@ spec:
   - port: 2888
     protocol: TCP
     targetPort: 2888
-    name: peerPort1
+    name: peer-port1
   - port: 3888
     protocol: TCP
     targetPort: 3888
-    name: peerPort2
+    name: peer-port2
   selector:
     name: zookeeper
     server-id: "1"
@@ -93,11 +93,11 @@ spec:
   - port: 2888
     protocol: TCP
     targetPort: 2888
-    name: peerPort1
+    name: peer-port1
   - port: 3888
     protocol: TCP
     targetPort: 3888
-    name: peerPort2
+    name: peer-port2
   selector:
     name: zookeeper
     server-id: "2"
@@ -145,11 +145,11 @@ spec:
   - port: 2888
     protocol: TCP
     targetPort: 2888
-    name: peerPort1
+    name: peer-port1
   - port: 3888
     protocol: TCP
     targetPort: 3888
-    name: peerPort2
+    name: peer-port2
   selector:
     name: zookeeper
     server-id: "3"
