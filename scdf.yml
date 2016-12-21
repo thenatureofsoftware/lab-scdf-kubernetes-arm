@@ -1,0 +1,53 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: scdf-deployment
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        name: scdf
+    spec:
+      containers:
+      - name: scdf
+        image: kodbasen/spring-cloud-dataflow-server-kubernetes-arm
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 9393
+        resources:
+          limits:
+            cpu: 1.0
+            memory: 1048Mi
+          requests:
+            cpu: 0.5
+            memory: 512Mi
+        env:
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: "metadata.namespace"
+        - name: SPRING_CLOUD_CONFIG_SERVER_BOOTSTRAP
+          value: 'false'
+        - name: SPRING_CLOUD_DATAFLOW_FEATURES_ANALYTICS_ENABLED
+          value: 'true'
+        - name: SPRING_CLOUD_DEPLOYER_KUBERNETES_MEMORY
+          value: 640Mi
+        - name: SPRING_CLOUD_KUBERNETES_SECRETS_ENABLE_API
+          value: 'true'
+        - name: SPRING_CLOUD_KUBERNETES_SECRETS_NAME
+          value: scdf-secrets
+        - name: SPRING_CLOUD_KUBERNETES_CONFIG_NAME
+          value: scdf-config
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: scdf
+  labels:
+    spring-cloud-service: scdf
+spec:
+  ports:
+    - port: 9393
+  selector:
+    name: scdf

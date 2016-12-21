@@ -2,12 +2,8 @@ FROM kodbasen/java-jdk-arm:latest
 
 MAINTAINER https://github.com/larmog
 
-USER root
-
 ENV DEBIAN_FRONTEND noninteractive
-ENV ZOOKEEPER_VERSION zookeeper.version
-ENV SERVER_ID=1
-ENV MAX_SERVERS=1
+ENV ZOOKEEPER_VERSION="zookeeper.version" SERVER_ID=1 MAX_SERVERS=1
 
 EXPOSE 2181 2888 3888
 
