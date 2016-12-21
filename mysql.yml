@@ -1,0 +1,40 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+    run: mysql
+  name: mysql
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: mysql
+  template:
+    metadata:
+      labels:
+        run: mysql
+    spec:
+      containers:
+      - image: tobi312/rpi-mysql:5.6
+        imagePullPolicy: IfNotPresent
+        name: mysql
+        env:
+          - name: MYSQL_ROOT_PASSWORD
+            # Change this password!
+            value: yourpassword
+        ports:
+        - containerPort: 3306
+          protocol: TCP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: mysql
+  name: mysql
+spec:
+  ports:
+    - port: 3306
+      targetPort: 3306
+  selector:
+    name: mysql

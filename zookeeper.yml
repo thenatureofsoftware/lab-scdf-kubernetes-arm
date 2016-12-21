@@ -37,7 +37,7 @@ spec:
   - port: 2181
     protocol: TCP
     targetPort: 2181
-    name: clientPort
+    name: client-port
   - port: 2888
     protocol: TCP
     targetPort: 2888
@@ -89,7 +89,7 @@ spec:
   - port: 2181
     protocol: TCP
     targetPort: 2181
-    name: clientPort
+    name: client-port
   - port: 2888
     protocol: TCP
     targetPort: 2888
@@ -141,7 +141,7 @@ spec:
   - port: 2181
     protocol: TCP
     targetPort: 2181
-    name: clientPort
+    name: client-port
   - port: 2888
     protocol: TCP
     targetPort: 2888
